@@ -122,7 +122,7 @@ function ding_campaign_display($context, $count, $offset, $pane_id) {
         case 'image':
           $camp_link = field_get_items('node', $node, 'field_camp_link');
           $camp_image = field_get_items('node', $node, 'field_camp_image');
-          $content = '<div class="' . $base_class . ' ' . $base_class . '-id-' .  $v . ' ding-campaign-item-image"><a target="_blank" href="' . $camp_link[0]['value'] . '"><img src="' . file_create_url($camp_image[0]['uri']) . '" alt="" /></a></div>';
+          $content = '<div class="' . $base_class . ' ' . $base_class . '-id-' . $v . ' ding-campaign-item-image"><a target="_blank" href="' . $camp_link[0]['value'] . '"><img src="' . file_create_url($camp_image[0]['uri']) . '" alt="" /></a></div>';
           break;
         case 'full':
           $camp_text_full = field_get_items('node', $node, 'field_camp_text_full');
@@ -238,7 +238,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND r.cid = d.cid
         AND r.cid = n.nid
         AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':nid' => (int)$nid,':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
+      ORDER BY d.weight DESC', array(':nid' => (int)$nid, ':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -258,7 +258,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND r.cid = d.cid
         AND r.cid = n.nid
         AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':tid' => (int)$tid,':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
+      ORDER BY d.weight DESC', array(':tid' => (int)$tid, ':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
       ->fetchAll();
 
     foreach ($result as $k => $v) {

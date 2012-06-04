@@ -76,7 +76,7 @@ function ding_campaign_campaign_content_type_edit_form($form, &$form_state) {
     '#description' => t('Define panel pane number if using multiple campaign panes on the same panel. This allows you to limit the selected campaings to those that are attached to this ID.'),
   );
 
-  drupal_add_css( drupal_get_path('module','ding_campaign') . '/css/ding_campaign_admin.css' );
+  drupal_add_css( drupal_get_path('module', 'ding_campaign') . '/css/ding_campaign_admin.css' );
 
   return $form;
 }
