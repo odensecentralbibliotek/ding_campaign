@@ -74,7 +74,7 @@ function ding_campaign_node_access($node) {
 function ding_campaign_theme($existing, $type, $theme, $path) {
   $hooks = array();
 
-   $hooks['ding_campaign'] = array(
+  $hooks['ding_campaign'] = array(
     'variables' => array('content' => NULL),
     'template' => 'ding_campaign',
     'path' => DING_CAMPAIGN_PATH . '/templates/',
@@ -116,16 +116,16 @@ function ding_campaign_display($context, $count, $offset) {
         case 'plain':
           $camp_link = field_get_items('node', $node, 'field_camp_link');
           $camp_text_plain = field_get_items('node', $node, 'field_camp_text_plain');
-          $content = '<div class="'.$base_class.' ding-campaign-item-plain"><a href="' . $camp_link[0]['value'] . '">' . $camp_text_plain[0]['value'] . '</a></div>';
+          $content = '<div class="' . $base_class . ' ding-campaign-item-plain"><a href="' . $camp_link[0]['value'] . '">' . $camp_text_plain[0]['value'] . '</a></div>';
           break;
         case 'image':
           $camp_link = field_get_items('node', $node, 'field_camp_link');
           $camp_image = field_get_items('node', $node, 'field_camp_image');
-          $content = '<div class="'.$base_class.' ding-campaign-item-image"><a target="_blank" href="' . $camp_link[0]['value'] . '"><img src="' . file_create_url($camp_image[0]['uri']) . '" alt="" /></a></div>';
+          $content = '<div class="' . $base_class . ' ding-campaign-item-image"><a target="_blank" href="' . $camp_link[0]['value'] . '"><img src="' . file_create_url($camp_image[0]['uri']) . '" alt="" /></a></div>';
           break;
         case 'full':
           $camp_text_full = field_get_items('node', $node, 'field_camp_text_full');
-          $content = '<div class="'.$base_class.' ding-campaign-item-full">' . $camp_text_full[0]['safe_value'] . '</div>';
+          $content = '<div class="' . $base_class . ' ding-campaign-item-full">' . $camp_text_full[0]['safe_value'] . '</div>';
           break;
       }
 
@@ -149,7 +149,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset) {
   $campaigns = array();
 
   // Process page campaigns.
-  if ($context['page'] != NULL && isset($context['page']->nid))  {
+  if ($context['page'] != NULL && isset($context['page']->nid)) {
     $nid = $context['page']->nid;
 
     $result = db_query('SELECT r.cid
@@ -159,7 +159,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-      ORDER BY d.weight DESC', array(':nid' => (int)$nid))
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -232,7 +232,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-      ORDER BY d.weight DESC', array(':nid' => (int)$nid))
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -251,7 +251,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-      ORDER BY d.weight DESC', array(':tid' => (int)$tid))
+      ORDER BY d.weight DESC', array(':tid' => (int) $tid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {

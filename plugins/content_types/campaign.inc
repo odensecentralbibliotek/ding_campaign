@@ -9,12 +9,16 @@ $plugin = array(
   'title' => t('Relevant campaigns'),
   'description' => t('Display ad-like campaigns'),
   'single' => TRUE,
-  'defaults' => array('ding_campaign_count' => 3, 'ding_campaign_offset' => 0),
+  'defaults' => array(
+    'ding_campaign_count' => 3,
+    'ding_campaign_offset' => 0,
+  ),
   'required context' => array(
-      new ctools_context_optional(t('Page node'), 'node'),
-      new ctools_context_optional(t('Related library'), 'node'),
-      new ctools_context_optional(t('Search term'), 'string'),
-      new ctools_context_optional(t('Taxonomy terms'), 'terms')),
+    new ctools_context_optional(t('Page node'), 'node'),
+    new ctools_context_optional(t('Related library'), 'node'),
+    new ctools_context_optional(t('Search term'), 'string'),
+    new ctools_context_optional(t('Taxonomy terms'), 'terms'),
+  ),
   'category' => t('Ding!'),
 );
 
@@ -68,7 +72,10 @@ function ding_campaign_campaign_content_type_edit_form($form, &$form_state) {
  */
 function ding_campaign_campaign_content_type_edit_form_validate($form, &$form_state) {
   // Sanitise the submitted values.
-  $values = array('ding_campaign_count' => 1, 'ding_campaign_offset' => 0);
+  $values = array(
+    'ding_campaign_count' => 1,
+    'ding_campaign_offset' => 0,
+  );
   foreach ($values as $value => $min_value) {
     $val = trim($form_state['values'][$value]);
     $count = intval($val);
