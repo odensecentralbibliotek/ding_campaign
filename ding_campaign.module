@@ -162,7 +162,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND r.cid = d.cid
         AND r.cid = n.nid
         AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':nid' => (int)$nid, ':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : 'NOT NULL'))
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : 'NOT NULL'))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -178,7 +178,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
       AND r.cid = d.cid
       AND r.cid = n.nid
       AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-    ORDER BY d.weight DESC', array(':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
+    ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
     ->fetchAll();
 
   $path = drupal_get_path_alias($_GET['q']);
@@ -218,7 +218,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND r.cid = n.nid
         AND r.rule ' . $condition . '
         AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
+      ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -238,7 +238,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND r.cid = d.cid
         AND r.cid = n.nid
         AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':nid' => (int)$nid, ':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -258,7 +258,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND r.cid = d.cid
         AND r.cid = n.nid
         AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':tid' => (int)$tid, ':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
+      ORDER BY d.weight DESC', array(':tid' => (int) $tid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -274,7 +274,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
       AND r.cid = d.cid
       AND r.cid = n.nid
       AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-    ORDER BY d.weight DESC', array(':pane_id' => ( (int)$pane_id ) ? (int)$pane_id : '*'))
+    ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
     ->fetchAll();
 
   foreach ($result as $k => $v) {
