@@ -14,7 +14,7 @@ $plugin = array(
     new ctools_context_optional(t('Page node'), 'node'),
     new ctools_context_optional(t('Related library'), 'node'),
     new ctools_context_optional(t('Search term'), 'string'),
-    new ctools_context_optional(t('Taxonomy terms'), 'terms'),
+    new ctools_context_optional(t('Taxonomy term'), array('entity:taxonomy_term', 'taxonomy_term')),
   ),
   'category' => t('Ding!'),
 );

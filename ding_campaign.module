@@ -530,3 +530,4 @@ function ding_campaign_campaign_node_form_validate($form, &$form_state) {
   }
 }
 
+include_once('ding_campaign.features.inc');
