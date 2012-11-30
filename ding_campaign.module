@@ -386,8 +386,6 @@ function ding_campaign_node_update($node) {
       'pane_id' => !empty($node_pane_id[0]['value']) ? $node_pane_id[0]['value'] : '0',
     );
 
-    //var_dump($data);die();
-
     db_update('ding_campaign')
       ->fields($data)
       ->condition('cid', $node->nid)
