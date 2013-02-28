@@ -20,11 +20,11 @@ function ding_campaign_ctype_ctools_plugin_api() {
 function ding_campaign_ctype_node_info() {
   $items = array(
     'ding_campaign' => array(
-      'name' => t('Campaign'),
+      'name' => t('Kampagne'),
       'base' => 'node_content',
-      'description' => '',
+      'description' => t('Create a campaign with an image / banner to be show in the right hand column when triggered by a certain context.'),
       'has_title' => '1',
-      'title_label' => t('Campaign name'),
+      'title_label' => t('Kampagnens navn'),
       'help' => '',
     ),
   );
