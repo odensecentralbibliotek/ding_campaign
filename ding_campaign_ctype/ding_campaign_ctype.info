@@ -13,6 +13,7 @@ features[field][] = "node-ding_campaign-field_camp_text_plain"
 features[field][] = "node-ding_campaign-field_camp_pane_id"
 // features[field][] = "node-ding_campaign-field_camp_theme"
 features[field][] = "node-ding_campaign-field_camp_weight"
+features[image][] = ding_campaign_small
 features[node][] = "ding_campaign"
 features[variable][] = "language_content_type_ding_campaign"
 features[variable][] = "node_options_ding_campaign"
