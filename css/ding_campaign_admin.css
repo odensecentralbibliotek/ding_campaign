@@ -1,6 +1,5 @@
 #ding-campaign-campaign-content-type-edit-form > div > div,
-#ding-campaign-campaign-content-type-edit-form > div > div.form-type-select.form-item-context-2,
-#ding-campaign-campaign-content-type-edit-form > div > div.form-type-select.form-item-ding-campaign-pane-id {
+#ding-campaign-campaign-content-type-edit-form > div > div.form-type-select.form-item-context-2 {
   clear: both;
 }
 

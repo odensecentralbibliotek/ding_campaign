@@ -110,9 +110,9 @@ function ding_campaign_theme($existing, $type, $theme, $path) {
  * @return
  *   HTML formatted string.
  */
-function ding_campaign_display($context, $count, $offset, $pane_id) {
+function ding_campaign_display($context, $count, $offset) {
 
-  $campaigns = ding_campaign_get_campaigns($context, $count, $offset, $pane_id);
+  $campaigns = ding_campaign_get_campaigns($context, $count, $offset);
 
   // There is at least one result.
   if (is_array($campaigns) && count($campaigns) > 0) {
@@ -169,7 +169,7 @@ function ding_campaign_display($context, $count, $offset, $pane_id) {
  *
  * @return
  */
-function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
+function ding_campaign_get_campaigns($context, $limit, $offset) {
 
   $campaigns = array();
 
@@ -184,8 +184,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-        AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':nid' => (int) $nid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : 'NOT NULL'))
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -200,8 +199,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
       AND n.status = 1
       AND r.cid = d.cid
       AND r.cid = n.nid
-      AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-    ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+    ORDER BY d.weight DESC')
     ->fetchAll();
 
   $path = drupal_get_path_alias($_GET['q']);
@@ -240,8 +238,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND r.cid = d.cid
         AND r.cid = n.nid
         AND r.rule ' . $condition . '
-        AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+      ORDER BY d.weight DESC')
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -260,8 +257,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-        AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':nid' => (int) $nid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -280,8 +276,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-        AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':tid' => (int) $tid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+      ORDER BY d.weight DESC', array(':tid' => (int) $tid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -296,8 +291,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
       AND n.status = 1
       AND r.cid = d.cid
       AND r.cid = n.nid
-      AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-    ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+    ORDER BY d.weight DESC')
     ->fetchAll();
 
   foreach ($result as $k => $v) {
@@ -353,13 +347,11 @@ function ding_campaign_node_insert($node) {
   if ($node->type == 'ding_campaign') {
     $node_type = field_get_items('node', $node, 'field_camp_settings');
     $node_weight = field_get_items('node', $node, 'field_camp_weight');
-    $node_pane_id = field_get_items('node', $node, 'field_camp_pane_id');
 
     $data = array(
       'cid' => $node->nid,
       'type' => $node_type[0]['value'],
       'weight' => $node_weight[0]['value'],
-      'pane_id' => ( !empty($node_pane_id[0]['value']) ) ? $node_pane_id[0]['value'] : '0',
     );
 
     db_insert('ding_campaign')
@@ -401,12 +393,11 @@ function ding_campaign_node_update($node) {
   if ($node->type == 'ding_campaign') {
     $node_type = field_get_items('node', $node, 'field_camp_settings');
     $node_weight = field_get_items('node', $node, 'field_camp_weight');
-    $node_pane_id = field_get_items('node', $node, 'field_camp_pane_id');
+
     // Update campaign fields.
     $data = array(
       'type' => $node_type[0]['value'],
       'weight' => $node_weight[0]['value'],
-      'pane_id' => !empty($node_pane_id[0]['value']) ? $node_pane_id[0]['value'] : '0',
     );
 
     db_update('ding_campaign')
