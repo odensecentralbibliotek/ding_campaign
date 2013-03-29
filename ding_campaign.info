@@ -8,7 +8,6 @@ dependencies[] = field
 dependencies[] = image
 dependencies[] = features
 dependencies[] = ctools
-scripts[] = js/ding_campaign_scripts.js
 features[variable][] = "comment_anonymous_ding_campaign"
 features[variable][] = "comment_default_mode_ding_campaign"
 features[variable][] = "comment_default_per_page_ding_campaign"
