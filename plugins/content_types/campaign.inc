@@ -9,12 +9,13 @@ $plugin = array(
   'title' => t('Relevant campaigns'),
   'description' => t('Display ad-like campaigns'),
   'single' => TRUE,
-  'defaults' => array('ding_campaign_count' => 3, 'ding_campaign_offset' => 0),
+  'defaults' => array('ding_campaign_count' => 3, 'ding_campaign_offset' => 0, 'ding_campaign_pane_id' => ''),
   'required context' => array(
-      new ctools_context_optional(t('Page node'), 'node'),
-      new ctools_context_optional(t('Related library'), 'node'),
-      new ctools_context_optional(t('Search term'), 'string'),
-      new ctools_context_optional(t('Taxonomy terms'), 'terms')),
+    new ctools_context_optional(t('Page node'), 'node'),
+    new ctools_context_optional(t('Related library'), 'node'),
+    new ctools_context_optional(t('Search term'), 'string'),
+    new ctools_context_optional(t('Taxonomy term'), array('entity:taxonomy_term', 'taxonomy_term')),
+  ),
   'category' => t('Ding!'),
 );
 
@@ -31,8 +32,9 @@ function ding_campaign_campaign_content_type_render($subtype, $conf, $panel_args
   );
   $count = $conf['ding_campaign_count'];
   $offset = $conf['ding_campaign_offset'];
+  $pane_id = ( isset($conf['ding_campaign_pane_id']) ) ? $conf['ding_campaign_pane_id'] : '0';
 
-  $block->content = ding_campaign_display($context_data, $count, $offset);
+  $block->content = ding_campaign_display($context_data, $count, $offset, $pane_id);
 
   return $block;
 }
@@ -60,6 +62,23 @@ function ding_campaign_campaign_content_type_edit_form($form, &$form_state) {
     '#maxlength' => 3,
   );
 
+  $form['ding_campaign_pane_id'] = array(
+    '#type' => 'select',
+    '#title' => t('Campaign block ID'),
+    '#default_value' => (isset($form_state['conf']['ding_campaign_pane_id'])) ? $form_state['conf']['ding_campaign_pane_id'] : '',
+    '#options' => array(
+      '' => t('Not applicable'),
+      '1' => '1',
+      '2' => '2',
+      '3' => '3',
+      '4' => '4',
+      '5' => '5',
+    ),
+    '#description' => t('Define panel pane number if using multiple campaign panes on the same panel. This allows you to limit the selected campaings to those that are attached to this ID.'),
+  );
+
+  drupal_add_css( drupal_get_path('module', 'ding_campaign') . '/css/ding_campaign_admin.css' );
+
   return $form;
 }
 
@@ -68,7 +87,7 @@ function ding_campaign_campaign_content_type_edit_form($form, &$form_state) {
  */
 function ding_campaign_campaign_content_type_edit_form_validate($form, &$form_state) {
   // Sanitise the submitted values.
-  $values = array('ding_campaign_count' => 1, 'ding_campaign_offset' => 0);
+  $values = array('ding_campaign_count' => 1, 'ding_campaign_offset' => 0, 'ding_campaign_pane_id' => TRUE);
   foreach ($values as $value => $min_value) {
     $val = trim($form_state['values'][$value]);
     $count = intval($val);
@@ -90,4 +109,5 @@ function ding_campaign_campaign_content_type_edit_form_validate($form, &$form_st
 function ding_campaign_campaign_content_type_edit_form_submit($form, &$form_state) {
   $form_state['conf']['ding_campaign_count'] = $form_state['values']['ding_campaign_count'];
   $form_state['conf']['ding_campaign_offset'] = $form_state['values']['ding_campaign_offset'];
+  $form_state['conf']['ding_campaign_pane_id'] = $form_state['values']['ding_campaign_pane_id'];
 }
