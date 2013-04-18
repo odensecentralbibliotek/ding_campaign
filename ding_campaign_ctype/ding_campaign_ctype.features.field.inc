@@ -90,7 +90,7 @@ function ding_campaign_ctype_field_default_fields() {
           'preview_image_style' => 'thumbnail',
           'progress_indicator' => 'throbber',
         ),
-        'type' => 'image_image',
+        'type' => 'media_generic',
         'weight' => '-2',
       ),
     ),
