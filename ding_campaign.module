@@ -110,9 +110,9 @@ function ding_campaign_theme($existing, $type, $theme, $path) {
  * @return
  *   HTML formatted string.
  */
-function ding_campaign_display($context, $count, $offset, $pane_id) {
+function ding_campaign_display($context, $count, $offset) {
 
-  $campaigns = ding_campaign_get_campaigns($context, $count, $offset, $pane_id);
+  $campaigns = ding_campaign_get_campaigns($context, $count, $offset);
 
   // There is at least one result.
   if (is_array($campaigns) && count($campaigns) > 0) {
@@ -145,7 +145,8 @@ function ding_campaign_display($context, $count, $offset, $pane_id) {
 
           $content =
             '<div class="' . $base_class . ' ' . $base_class . '-id-' . $v . ' ding-campaign-item-image"><a target="_blank" href="' . $camp_link[0]['value'] . '">'
-            . '<img src="' . file_create_url($camp_image[0]['uri']) . '" alt="' . $image_alt . '" title="' . $image_title  . '" /></a></div>';
+            . '<img src="' . image_style_url('ding_campaign_small', $camp_image[0]['uri']) . '" alt="' . $image_alt . '" title="' . $image_title  . '" />'
+            . '</a></div>';
           break;
 
         case 'full':
@@ -171,9 +172,47 @@ function ding_campaign_display($context, $count, $offset, $pane_id) {
  *
  * @return
  */
-function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
+function ding_campaign_get_campaigns($context, $limit, $offset) {
 
   $campaigns = array();
+
+  // Process event campaigns.
+  if ($context['page'] != NULL && isset($context['page']->nid) && $context['page']->type == 'ding_event') {
+    $nid = $context['page']->nid;
+
+    $result = db_query('SELECT r.cid
+      FROM {ding_campaign_rules} r, {ding_campaign} d, {node} n
+      WHERE r.nid = :nid
+        AND r.type = \'rule_event\'
+        AND n.status = 1
+        AND r.cid = d.cid
+        AND r.cid = n.nid
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid))
+      ->fetchAll();
+
+    foreach ($result as $k => $v) {
+      @$campaigns[$v->cid] += 11;
+    }
+  }
+
+  // Process news campaigns.
+  if ($context['page'] != NULL && isset($context['page']->nid) && $context['page']->type == 'ding_news') {
+    $nid = $context['page']->nid;
+
+    $result = db_query('SELECT r.cid
+      FROM {ding_campaign_rules} r, {ding_campaign} d, {node} n
+      WHERE r.nid = :nid
+        AND r.type = \'rule_news\'
+        AND n.status = 1
+        AND r.cid = d.cid
+        AND r.cid = n.nid
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid))
+      ->fetchAll();
+
+    foreach ($result as $k => $v) {
+      @$campaigns[$v->cid] += 10;
+    }
+  }
 
   // Process page campaigns.
   if ($context['page'] != NULL && isset($context['page']->nid)) {
@@ -186,8 +225,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-        AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':nid' => (int) $nid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : 'NOT NULL'))
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -202,8 +240,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
       AND n.status = 1
       AND r.cid = d.cid
       AND r.cid = n.nid
-      AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-    ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+    ORDER BY d.weight DESC')
     ->fetchAll();
 
   $path = drupal_get_path_alias($_GET['q']);
@@ -242,8 +279,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND r.cid = d.cid
         AND r.cid = n.nid
         AND r.rule ' . $condition . '
-        AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+      ORDER BY d.weight DESC')
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -252,8 +288,8 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
   }
 
   // Process library campaigns.
-  if ($context['library'] != NULL && isset($context['library']->nid) && $context['library']->type == 'ding_library' ) {
-    $nid = $context['library']->nid;
+  if ($context['page'] != NULL && isset($context['page']->nid) && $context['page']->type == 'ding_library' ) {
+    $nid = $context['page']->nid;
 
     $result = db_query('SELECT r.cid
       FROM {ding_campaign_rules} r, {ding_campaign} d, {node} n
@@ -262,8 +298,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-        AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':nid' => (int) $nid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+      ORDER BY d.weight DESC', array(':nid' => (int) $nid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -282,8 +317,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
         AND n.status = 1
         AND r.cid = d.cid
         AND r.cid = n.nid
-        AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-      ORDER BY d.weight DESC', array(':tid' => (int) $tid, ':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+      ORDER BY d.weight DESC', array(':tid' => (int) $tid))
       ->fetchAll();
 
     foreach ($result as $k => $v) {
@@ -298,8 +332,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset, $pane_id) {
       AND n.status = 1
       AND r.cid = d.cid
       AND r.cid = n.nid
-      AND ( d.pane_id = :pane_id OR d.pane_id = 0 )
-    ORDER BY d.weight DESC', array(':pane_id' => ( (int) $pane_id ) ? (int) $pane_id : '*'))
+    ORDER BY d.weight DESC')
     ->fetchAll();
 
   foreach ($result as $k => $v) {
@@ -355,13 +388,11 @@ function ding_campaign_node_insert($node) {
   if ($node->type == 'ding_campaign') {
     $node_type = field_get_items('node', $node, 'field_camp_settings');
     $node_weight = field_get_items('node', $node, 'field_camp_weight');
-    $node_pane_id = field_get_items('node', $node, 'field_camp_pane_id');
 
     $data = array(
       'cid' => $node->nid,
       'type' => $node_type[0]['value'],
       'weight' => $node_weight[0]['value'],
-      'pane_id' => ( !empty($node_pane_id[0]['value']) ) ? $node_pane_id[0]['value'] : '0',
     );
 
     db_insert('ding_campaign')
@@ -377,11 +408,12 @@ function ding_campaign_node_insert($node) {
   if (isset($enabled_types[$node->form_id]) && $enabled_types[$node->form_id] === $node->form_id) {
     if (isset($node->ding_campaigns) && is_array($node->ding_campaigns)) {
       foreach ($node->ding_campaigns as $k => $v) {
+        $type = _ding_campaign_rule_by_type($node->type);
         $data = array(
           'nid' => $node->nid,
           'cid' => $v,
           'rule' => '[nid:' . $node->nid . ']',
-          'type' => ($node->type == 'library') ? 'rule_library' : 'rule_page',
+          'type' => $type,
         );
 
         // Skip the unused campaigns.
@@ -403,12 +435,11 @@ function ding_campaign_node_update($node) {
   if ($node->type == 'ding_campaign') {
     $node_type = field_get_items('node', $node, 'field_camp_settings');
     $node_weight = field_get_items('node', $node, 'field_camp_weight');
-    $node_pane_id = field_get_items('node', $node, 'field_camp_pane_id');
+
     // Update campaign fields.
     $data = array(
       'type' => $node_type[0]['value'],
       'weight' => $node_weight[0]['value'],
-      'pane_id' => !empty($node_pane_id[0]['value']) ? $node_pane_id[0]['value'] : '0',
     );
 
     db_update('ding_campaign')
@@ -430,11 +461,13 @@ function ding_campaign_node_update($node) {
         ->execute();
 
       foreach ($node->ding_campaigns as $k => $v) {
+        $type = _ding_campaign_rule_by_type($node->type);
+
         $data = array(
           'nid' => $node->nid,
           'cid' => $v,
           'rule' => '[nid:' . $node->nid . ']',
-          'type' => ($node->type == 'library') ? 'rule_library' : 'rule_page',
+          'type' => $type,
         );
 
         // Skip the unused campaigns.
@@ -477,7 +510,7 @@ function ding_campaign_node_load($node) {
   // Process other types of nodes (selected in backend).
   if (isset($enabled_types[$node[$nids[0]]->type . '_node_form']) && $enabled_types[$node[$nids[0]]->type . '_node_form'] === $node[$nids[0]]->type . '_node_form') {
     $nids = array_keys($node);
-    $or = db_or()->condition('type', 'rule_library')->condition('type', 'rule_page');
+    $or = db_or()->condition('type', 'rule_library')->condition('type', 'rule_page')->condition('type', 'rule_news')->condition('type', 'rule_event');
     $result = db_select('ding_campaign_rules')
       ->fields('ding_campaign_rules', array('cid'))
       ->condition('nid', $node[$nids[0]]->nid)
@@ -553,6 +586,30 @@ function ding_campaign_campaign_node_form_validate($form, &$form_state) {
       form_set_error('field_camp_link', 'Empty links are not allowed for plain text and image type campaigns.');
     }
   }
+}
+/**
+ * Get rule name by node type.
+ * @param string $node_type
+ *   Node type.
+ * @return string
+ *   Rule name.
+ */
+function _ding_campaign_rule_by_type($node_type) {
+  // Set rule type
+  switch ($node_type) {
+    case 'library':
+      $type = 'rule_library';
+      break;
+    case 'ding_event':
+      $type = 'rule_event';
+      break;
+    case 'ding_news':
+      $type = 'rule_news';
+      break;
+    default:
+      $type = 'rule_page';
+  }
+  return $type;
 }
 
 include_once('ding_campaign.features.inc');

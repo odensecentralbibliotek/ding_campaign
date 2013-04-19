@@ -1,14 +1,13 @@
 name = Ding campaign
 description = Campaign system. Displays context-sensitive, ad-like campaigns.
 package = Ding!
-version = "7.x-1.9.2"
+version = "7.x-1.9.6"
 core = 7.x
 configure = admin/config/ding/campaign
 dependencies[] = field
 dependencies[] = image
 dependencies[] = features
 dependencies[] = ctools
-scripts[] = js/ding_campaign_scripts.js
 features[variable][] = "comment_anonymous_ding_campaign"
 features[variable][] = "comment_default_mode_ding_campaign"
 features[variable][] = "comment_default_per_page_ding_campaign"
