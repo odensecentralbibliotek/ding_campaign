@@ -53,7 +53,17 @@ function ding_campaign_ctype_field_default_fields() {
             'image_style' => '',
           ),
           'type' => 'image',
-          'weight' => 2,
+          'weight' => '2',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => '',
+          ),
+          'type' => 'image',
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -85,8 +95,16 @@ function ding_campaign_ctype_field_default_fields() {
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'image',
+        'module' => 'media',
         'settings' => array(
+          'allowed_schemes' => array(
+            0 => 'public',
+            1 => 'private',
+          ),
+          'allowed_types' => array(
+            0 => 'image',
+          ),
+          'browser_plugins' => array(),
           'preview_image_style' => 'thumbnail',
           'progress_indicator' => 'throbber',
         ),
@@ -136,7 +154,14 @@ function ding_campaign_ctype_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 4,
+          'weight' => '4',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '4',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -213,7 +238,14 @@ function ding_campaign_ctype_field_default_fields() {
           'module' => 'list',
           'settings' => array(),
           'type' => 'list_default',
-          'weight' => 0,
+          'weight' => '0',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -283,7 +315,14 @@ function ding_campaign_ctype_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 3,
+          'weight' => '3',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -356,7 +395,14 @@ function ding_campaign_ctype_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 1,
+          'weight' => '1',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -451,7 +497,14 @@ function ding_campaign_ctype_field_default_fields() {
           'module' => 'list',
           'settings' => array(),
           'type' => 'list_default',
-          'weight' => 6,
+          'weight' => '6',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => '6',
         ),
         'teaser' => array(
           'label' => 'above',
