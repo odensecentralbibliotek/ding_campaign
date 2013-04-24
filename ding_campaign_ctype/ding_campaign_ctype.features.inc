@@ -20,9 +20,9 @@ function ding_campaign_ctype_ctools_plugin_api() {
 function ding_campaign_ctype_image_default_styles() {
   $styles = array();
 
-  // Exported image style: ding_campaign_small.
-  $styles['ding_campaign_small'] = array(
-    'name' => 'ding_campaign_small',
+  // Exported image style: ding_campaign_w_180.
+  $styles['ding_campaign_w_180'] = array(
+    'name' => 'ding_campaign_w_180',
     'effects' => array(
       3 => array(
         'label' => 'Scale',
@@ -34,26 +34,80 @@ function ding_campaign_ctype_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '360',
+          'width' => '180',
           'height' => '',
-          'upscale' => 0,
+          'upscale' => 1,
         ),
         'weight' => '1',
       ),
+    ),
+  );
+
+  // Exported image style: ding_campaign_w_280.
+  $styles['ding_campaign_w_280'] = array(
+    'name' => 'ding_campaign_w_280',
+    'effects' => array(
       4 => array(
-        'label' => 'Scale and crop',
-        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
-        'effect callback' => 'image_scale_and_crop_effect',
-        'dimensions callback' => 'image_resize_dimensions',
-        'form callback' => 'image_resize_form',
-        'summary theme' => 'image_resize_summary',
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
         'module' => 'image',
-        'name' => 'image_scale_and_crop',
+        'name' => 'image_scale',
         'data' => array(
-          'width' => '360',
-          'height' => '240',
+          'width' => '280',
+          'height' => '',
+          'upscale' => 1,
         ),
-        'weight' => '2',
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  // Exported image style: ding_campaign_w_380.
+  $styles['ding_campaign_w_380'] = array(
+    'name' => 'ding_campaign_w_380',
+    'effects' => array(
+      5 => array(
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
+        'module' => 'image',
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => '380',
+          'height' => '',
+          'upscale' => 1,
+        ),
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  // Exported image style: ding_campaign_w_480.
+  $styles['ding_campaign_w_480'] = array(
+    'name' => 'ding_campaign_w_480',
+    'effects' => array(
+      6 => array(
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
+        'module' => 'image',
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => '480',
+          'height' => '',
+          'upscale' => 1,
+        ),
+        'weight' => '1',
       ),
     ),
   );

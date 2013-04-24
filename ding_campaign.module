@@ -1,9 +1,9 @@
 <?php
+
 /**
  * @file
  * Provides campaign feature to various node types in Ding.
  */
-
 define('DING_CAMPAIGN_PATH', drupal_get_path('module', 'ding_campaign'));
 define('DING_CAMPAIGN_DEFAULT_COUNT', 3);
 
@@ -144,7 +144,7 @@ function ding_campaign_display($context, $count, $offset) {
 
           $content =
             '<div class="' . $base_class . ' ' . $base_class . '-id-' . $v . ' ding-campaign-item-image"><a target="_blank" href="' . $camp_link[0]['value'] . '">'
-            . '<img src="' . image_style_url('ding_campaign_small', $camp_image[0]['uri']) . '" alt="' . $image_alt . '" title="' . $image_title  . '" />'
+            . '<img src="' . image_style_url('ding_campaign_small', $camp_image[0]['uri']) . '" alt="' . $image_alt . '" title="' . $image_title . '" />'
             . '</a></div>';
           break;
         case 'full':
@@ -341,7 +341,6 @@ function ding_campaign_get_campaigns($context, $limit, $offset) {
   arsort($campaigns);
 
   return array_slice(array_keys($campaigns), $offset, $limit);
-
 }
 
 /**
@@ -354,6 +353,25 @@ function ding_campaign_form_alter(&$form, &$form_state, $form_id) {
     unset($form['field_camp_settings'][$form['field_camp_settings']['#language']]['#options']['_none']);
     // Remove the 'None' value from weight dropdown.
     unset($form['field_camp_weight'][$form['field_camp_weight']['#language']]['#options']['_none']);
+
+    $lang = $form['field_camp_settings']['#language'];
+    $form['field_camp_text_plain']['#states'] = array(
+      'visible' => array(
+        ':input[name=field_camp_settings[' . $lang . ']]' => array('value' => 'plain')
+      )
+    );
+
+    $form['field_camp_image']['#states'] = array(
+      'visible' => array(
+        ':input[name=field_camp_settings[' . $lang . ']]' => array('value' => 'image')
+      )
+    );
+
+    $form['field_camp_text_full']['#states'] = array(
+      'visible' => array(
+        ':input[name=field_camp_settings[' . $lang . ']]' => array('value' => 'full')
+      )
+    );
 
     $form['#validate'] = array('ding_campaign_campaign_node_form_validate');
   }
@@ -584,6 +602,7 @@ function ding_campaign_campaign_node_form_validate($form, &$form_state) {
     }
   }
 }
+
 /**
  * Get rule name by node type.
  * @param string $node_type
@@ -608,5 +627,3 @@ function _ding_campaign_rule_by_type($node_type) {
   }
   return $type;
 }
-
-include_once('ding_campaign.features.inc');
