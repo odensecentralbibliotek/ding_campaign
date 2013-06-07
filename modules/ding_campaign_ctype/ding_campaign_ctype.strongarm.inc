@@ -65,14 +65,14 @@ function ding_campaign_ctype_strongarm() {
   $strongarm->name = 'field_bundle_settings_node__ding_campaign';
   $strongarm->value = array(
     'view_modes' => array(
-      'full' => array(
-        'custom_settings' => TRUE,
-      ),
       'teaser' => array(
         'custom_settings' => TRUE,
       ),
       'teaser_highlight' => array(
         'custom_settings' => TRUE,
+      ),
+      'full' => array(
+        'custom_settings' => FALSE,
       ),
       'rss' => array(
         'custom_settings' => FALSE,

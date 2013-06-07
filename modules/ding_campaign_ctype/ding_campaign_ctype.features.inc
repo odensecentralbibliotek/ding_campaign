@@ -34,11 +34,11 @@ function ding_campaign_ctype_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '180',
+          'width' => 180,
           'height' => '',
           'upscale' => 1,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
   );
@@ -57,11 +57,11 @@ function ding_campaign_ctype_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '280',
+          'width' => 280,
           'height' => '',
           'upscale' => 1,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
   );
@@ -80,11 +80,11 @@ function ding_campaign_ctype_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '380',
+          'width' => 380,
           'height' => '',
           'upscale' => 1,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
   );
@@ -103,11 +103,11 @@ function ding_campaign_ctype_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '480',
+          'width' => 480,
           'height' => '',
           'upscale' => 1,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
   );
