@@ -273,3 +273,160 @@ function ding_campaign_admin_autocomplete($type, $input) {
   }
   drupal_json_output($matches);
 }
+
+/**
+ * Ajax callback for selecting campaign on the current page.
+ *
+ * @param $type
+ *   Type.
+ * @param $input
+ *   Input.
+ */
+function ding_campaign_admin_select($js = NULL, $step = NULL) {
+  if (!$js) {
+    return drupal_get_form('ding_campaign_admin_select_form');
+  }
+  ctools_include('modal');
+  ctools_include('ajax');
+  $form_state = array(
+    'title' => t('Select campaigns'),
+    'ajax' => TRUE,
+  );
+  $output = ctools_modal_form_wrapper('ding_campaign_admin_select_form', $form_state);
+  print ajax_render($output);
+  exit;
+}
+
+function ding_campaign_admin_select_form($form, &$form_state) {
+  $destination = drupal_get_destination();
+  $path_alias = $destination['destination'];
+  $path = drupal_get_normal_path($path_alias);
+  $front_page = variable_get('site_frontpage', 'node');
+  if ($path == $front_page) {
+    $path_alias = '<front>';
+  }
+  $form['path'] = array(
+    '#type' => 'hidden',
+    '#default_value' => $path,
+  );
+  $form['path_alias'] = array(
+    '#type' => 'hidden',
+    '#default_value' => $path_alias,
+  );
+  $defaults = array();
+  $path_arr = explode('/', $path);
+  if ($path_arr[0] == 'node') {
+    $node = node_load($path_arr[1]);
+    $enabled_types = variable_get('ding_campaign_node_types', array());
+    if (isset($enabled_types[$node->type . '_node_form']) && $enabled_types[$node->type . '_node_form'] === $node->type . '_node_form') {
+      $form['node'] = array(
+        '#type' => 'value',
+        '#value' => $node,
+      );
+      if (isset($node->ding_campaigns) && is_array($node->ding_campaigns)) {
+        $defaults = $node->ding_campaigns;
+      }
+    }
+  }
+  // Process path-based campaigns.
+  $rules = db_query('SELECT r.cid, r.rule
+    FROM {ding_campaign_rules} r, {ding_campaign} d, {node} n
+    WHERE r.type = \'rule_path\'
+      AND n.status = 1
+      AND r.cid = d.cid
+      AND r.cid = n.nid
+    ')->fetchAll();
+
+  foreach ($rules as $rule) {
+    $page_match = drupal_match_path($path_alias, $rule->rule);
+
+    if ($path != $path_alias) {
+      $page_match = $page_match || drupal_match_path($path, $rule->rule);
+    }
+
+    if ($page_match) {
+      if (strpos($rule->rule, "*")) {
+        // Enabled for multiple paths.
+        $with_wildcard[$rule->cid] = $rule->rule;
+      } else {
+        // Enabled for this specific path.
+        $defaults[$rule->cid] = $rule->cid;
+      }
+    }
+  }
+  $form['ding_campaigns_wrap'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Available campaigns',
+  );
+  $options = ding_campaign_get_list();
+  if (!empty($with_wildcard)) {
+    foreach ($with_wildcard as $cid => $rule) {
+      $options[$cid] .= " (also enabled by this 'path rule': <a href=http://o722.dev/node/640/campaign_rules>$rule</a>)";
+    }
+  }
+  $form['ding_campaigns_wrap']['ding_campaigns'] = array(
+    '#type' => 'checkboxes',
+    '#default_value' => $defaults,
+    '#options' => $options,
+    '#description' => 'Select campaigns asociated with this node.',
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+
+  return $form;
+}
+
+function ding_campaign_admin_select_form_submit($form, &$form_state) {
+  $destination = drupal_get_destination();
+  $path = $form_state['values']['path'];
+  $path_alias = $form_state['values']['path_alias'];
+  $defaults = $form['ding_campaigns_wrap']['ding_campaigns']['#default_value'];
+  // Throw away all disabled campaigns.
+  $campaigns = array_filter($form_state['input']['ding_campaigns']);
+  $added = array_diff_key($campaigns, $defaults);
+  $removed = array_diff_key($defaults, $campaigns);
+  $node = isset($form['node']) ? $form['node']['#value'] : NULL;
+  $rule = isset($node) ? _ding_campaign_rule_by_type($node->type) : 'rule_path';
+
+  foreach ($added as $campaign) {
+    $dt = array(
+      'nid' => isset($node) ? $node->nid : NULL,
+      'cid' => $campaign,
+      'rule' => $path_alias,
+      'type' => $rule,
+    );
+
+    $success = db_insert('ding_campaign_rules')
+      ->fields($dt)
+      ->execute();
+    if (!$success) {
+      drupal_set_message(t('Could not add campaign rule'), 'error');
+    }
+  }
+
+  foreach ($removed as $campaign) {
+    // Remove the relevant rule_path for this campaign.
+    $path_or = db_or()->condition('rule', $path)->condition('rule', $path_alias);
+    $rules = db_and()->condition('type', 'rule_path')->condition($path_or);
+    if (isset($node)) {
+      // Also remove the rule_page or similar for this campaign.
+      $rule_node = db_and()->condition('type', $rule)->condition('nid', $node->nid);
+      $rules = db_or()->condition($rules)->condition($rule_node);
+    }
+    $success = db_delete('ding_campaign_rules')
+      ->condition('cid', $campaign)
+      ->condition($rules)
+      ->execute();
+    if (!$success) {
+      drupal_set_message(t('Could not delete campaign rule'), 'error');
+    }
+  }
+  if (isset($form_state['ajax']) && $form_state['ajax']) {
+    ctools_include('ajax');
+    $commands[] = ctools_ajax_command_redirect($destination['destination']);
+    print ajax_render($commands);
+    exit;
+  }
+}

@@ -44,6 +44,16 @@ function ding_campaign_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['ding_campaign/%ctools_js/select'] = array(
+    'title' => 'Select campaigns',
+    'description' => 'Select campaigns for the current path',
+    'page callback' => 'ding_campaign_admin_select',
+    'page arguments' => array(1),
+    'access arguments' => array('access campaign rules'),
+    'file' => 'ding_campaign.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
