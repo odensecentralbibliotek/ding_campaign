@@ -444,21 +444,22 @@ function ding_campaign_node_insert($node) {
   // Process other types of nodes (selected in backend).
   if (isset($enabled_types[$node->form_id]) && $enabled_types[$node->form_id] === $node->form_id) {
     if (isset($node->ding_campaigns) && is_array($node->ding_campaigns)) {
-      foreach ($node->ding_campaigns as $k => $v) {
+      $enabled_campaigns = array_filter($node->ding_campaigns);
+      foreach ($enabled_campaigns as $campaign) {
         $type = _ding_campaign_rule_by_type($node->type);
         $data = array(
           'nid' => $node->nid,
-          'cid' => $v,
+          'cid' => $campaign,
           'rule' => '[nid:' . $node->nid . ']',
           'type' => $type,
         );
 
-        // Skip the unused campaigns.
-        if ($v != 0) {
-          db_insert('ding_campaign_rules')
-            ->fields($data)
-            ->execute();
-        }
+        db_insert('ding_campaign_rules')
+          ->fields($data)
+          ->execute();
+      }
+      if (!empty($enabled_campaigns)) {
+        rules_invoke_event('ding_campaign_rule_update');
       }
     }
   }
@@ -582,6 +583,11 @@ function ding_campaign_node_delete($node) {
       db_delete('ding_campaign_rules')
         ->condition('nid', $node->nid)
         ->execute();
+      // It shouldn't be necessary to invoke the ding_campaign_rule_update event
+      // since the rules removed are those that would show on the node page that
+      // is no longer. When the node page isn't shown any more, it isn't
+      // necessary to clear its cache.
+      // The event could of course be used for other than clearing a block cache...
     }
   }
 }

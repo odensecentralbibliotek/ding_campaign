@@ -176,6 +176,7 @@ function ding_campaign_campaign_rule_form_submit($form, &$form_state) {
           ->execute();
       }
     }
+    rules_invoke_event('ding_campaign_rule_update');
   }
 }
 
@@ -423,6 +424,7 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
       drupal_set_message(t('Could not delete campaign rule'), 'error');
     }
   }
+  rules_invoke_event('ding_campaign_rule_update');
   if (isset($form_state['ajax']) && $form_state['ajax']) {
     ctools_include('ajax');
     $commands[] = ctools_ajax_command_redirect($destination['destination']);
