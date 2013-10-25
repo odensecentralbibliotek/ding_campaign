@@ -39,11 +39,14 @@ function ding_campaign_campaign_content_type_render($subtype, $conf, $panel_args
   $style = (!empty($conf['ding_campaign_image_style'])) ? $conf['ding_campaign_image_style'] : 'medium';
 
   $block->content = ding_campaign_display($context_data, $count, $offset, $style);
-  ctools_include('ajax');
-  ctools_include('modal');
-  ctools_modal_add_js();
-  $destination = drupal_get_destination();
-  $block->content .= l(t('Select campaigns'), 'ding_campaign/nojs/select', array('query' => $destination, 'html' => TRUE, 'attributes' => array('class' => array('ctools-use-modal'), 'title' => t('Select campaigns for this path'))));
+
+  if (user_access('access campaign rules')) {
+    ctools_include('ajax');
+    ctools_include('modal');
+    ctools_modal_add_js();
+    $destination = drupal_get_destination();
+    $block->content .= l(t('Select campaigns'), 'ding_campaign/nojs/select', array('query' => $destination, 'html' => TRUE, 'attributes' => array('class' => array('ctools-use-modal'), 'title' => t('Select campaigns for this path'))));
+  }
 
   return $block;
 }
