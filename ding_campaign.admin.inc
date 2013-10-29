@@ -300,8 +300,8 @@ function ding_campaign_admin_select($js = NULL, $step = NULL) {
 
 function ding_campaign_admin_select_form($form, &$form_state) {
   $destination = drupal_get_destination();
-  $path_alias = $destination['destination'];
-  $path = drupal_get_normal_path($path_alias);
+  $path = $destination['destination'];
+  $path_alias = drupal_get_path_alias($path);
   $front_page = variable_get('site_frontpage', 'node');
   if ($path == $front_page) {
     $path_alias = '<front>';
