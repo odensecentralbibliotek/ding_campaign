@@ -320,10 +320,7 @@ function ding_campaign_admin_select_form($form, &$form_state) {
     $node = node_load($path_arr[1]);
     $enabled_types = variable_get('ding_campaign_node_types', array());
     if (isset($enabled_types[$node->type . '_node_form']) && $enabled_types[$node->type . '_node_form'] === $node->type . '_node_form') {
-      $form['node'] = array(
-        '#type' => 'value',
-        '#value' => $node,
-      );
+      $form['#node'] = $node;
       if (isset($node->ding_campaigns) && is_array($node->ding_campaigns)) {
         $defaults = $node->ding_campaigns;
       }
@@ -386,42 +383,42 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
   $defaults = $form['ding_campaigns_wrap']['ding_campaigns']['#default_value'];
   // Throw away all disabled campaigns.
   $campaigns = array_filter($form_state['input']['ding_campaigns']);
-  $added = array_diff_key($campaigns, $defaults);
-  $removed = array_diff_key($defaults, $campaigns);
-  $node = isset($form['node']) ? $form['node']['#value'] : NULL;
-  $rule = isset($node) ? _ding_campaign_rule_by_type($node->type) : 'rule_path';
+  if (isset($form['#node'])) {
+    $node = $form['#node'];
+    $node->ding_campaigns = $campaigns;
+    node_save($node);
+  } else {
+    $added = array_diff_key($campaigns, $defaults);
+    $removed = array_diff_key($defaults, $campaigns);
+    $rule = 'rule_path';
 
-  foreach ($added as $campaign) {
-    $dt = array(
-      'nid' => isset($node) ? $node->nid : NULL,
-      'cid' => $campaign,
-      'rule' => $path_alias,
-      'type' => $rule,
-    );
+    foreach ($added as $campaign) {
+      $dt = array(
+        'nid' => NULL,
+        'cid' => $campaign,
+        'rule' => $path_alias,
+        'type' => $rule,
+      );
 
-    $success = db_insert('ding_campaign_rules')
-      ->fields($dt)
-      ->execute();
-    if (!$success) {
-      drupal_set_message(t('Could not add campaign rule'), 'error');
+      $success = db_insert('ding_campaign_rules')
+        ->fields($dt)
+        ->execute();
+      if (!$success) {
+        drupal_set_message(t('Could not add campaign rule'), 'error');
+      }
     }
-  }
 
-  foreach ($removed as $campaign) {
-    // Remove the relevant rule_path for this campaign.
-    $path_or = db_or()->condition('rule', $path)->condition('rule', $path_alias);
-    $rules = db_and()->condition('type', 'rule_path')->condition($path_or);
-    if (isset($node)) {
-      // Also remove the rule_page or similar for this campaign.
-      $rule_node = db_and()->condition('type', $rule)->condition('nid', $node->nid);
-      $rules = db_or()->condition($rules)->condition($rule_node);
-    }
-    $success = db_delete('ding_campaign_rules')
-      ->condition('cid', $campaign)
-      ->condition($rules)
-      ->execute();
-    if (!$success) {
-      drupal_set_message(t('Could not delete campaign rule'), 'error');
+    foreach ($removed as $campaign) {
+      // Remove the relevant rule_path for this campaign.
+      $path_or = db_or()->condition('rule', $path)->condition('rule', $path_alias);
+      $rules = db_and()->condition('type', 'rule_path')->condition($path_or);
+      $success = db_delete('ding_campaign_rules')
+        ->condition('cid', $campaign)
+        ->condition($rules)
+        ->execute();
+      if (!$success) {
+        drupal_set_message(t('Could not delete campaign rule'), 'error');
+      }
     }
   }
   rules_invoke_event('ding_campaign_rule_update');
