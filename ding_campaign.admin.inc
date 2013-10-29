@@ -362,7 +362,7 @@ function ding_campaign_admin_select_form($form, &$form_state) {
   $options = ding_campaign_get_list();
   if (!empty($with_wildcard)) {
     foreach ($with_wildcard as $cid => $rule) {
-      $options[$cid] .= " (also enabled by this 'path rule': <a href=http://o722.dev/node/640/campaign_rules>$rule</a>)";
+      $options[$cid] .= " (also enabled by this 'path rule': <a href=http://o722.dev/node/$cid/campaign_rules>$rule</a>)";
     }
   }
   $form['ding_campaigns_wrap']['ding_campaigns'] = array(
