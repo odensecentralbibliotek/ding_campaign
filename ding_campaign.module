@@ -405,6 +405,8 @@ function ding_campaign_form_alter(&$form, &$form_state, $form_id) {
       $form['ding_campaigns_wrap'] = array(
         '#type' => 'fieldset',
         '#title' => 'Available campaigns',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
       );
 
       $form['ding_campaigns_wrap']['ding_campaigns'] = array(
