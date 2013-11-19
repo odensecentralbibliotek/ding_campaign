@@ -404,7 +404,7 @@ function ding_campaign_form_alter(&$form, &$form_state, $form_id) {
     if (isset($form['#node']) && isset($enabled_types[$form['#form_id']]) && ($enabled_types[$form['#form_id']] === $form['#form_id'])) {
       $form['ding_campaigns_wrap'] = array(
         '#type' => 'fieldset',
-        '#title' => 'Available campaigns',
+        '#title' => t('Available campaigns'),
         '#collapsible' => TRUE,
         '#collapsed' => TRUE,
       );
