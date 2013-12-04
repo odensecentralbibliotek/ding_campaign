@@ -300,7 +300,8 @@ function ding_campaign_admin_select($js = NULL, $step = NULL) {
 
 function ding_campaign_admin_select_form($form, &$form_state) {
   $destination = drupal_get_destination();
-  $path = $destination['destination'];
+  $path = substr($destination['destination'], 0, strpos($destination['destination'], '?'));
+  
   $path_alias = drupal_get_path_alias($path);
   $front_page = variable_get('site_frontpage', 'node');
   if ($path == $front_page) {
@@ -424,7 +425,12 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
   rules_invoke_event('ding_campaign_rule_update');
   if (isset($form_state['ajax']) && $form_state['ajax']) {
     ctools_include('ajax');
-    $commands[] = ctools_ajax_command_redirect($destination['destination']);
+    ctools_add_js('ajax-responder');
+    $commands[] = array(
+    'command' => 'redirect',
+    'url' => $destination['destination'],
+    'delay' => 0,
+  );
     print ajax_render($commands);
     exit;
   }
