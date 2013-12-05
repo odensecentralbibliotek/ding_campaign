@@ -425,12 +425,8 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
   rules_invoke_event('ding_campaign_rule_update');
   if (isset($form_state['ajax']) && $form_state['ajax']) {
     ctools_include('ajax');
-    ctools_add_js('ajax-responder');
-    $commands[] = array(
-    'command' => 'redirect',
-    'url' => $destination['destination'],
-    'delay' => 0,
-  );
+    $options = drupal_parse_url($destination['destination']);
+    $commands[] = ctools_ajax_command_redirect($options['path'], 0, $options);
     print ajax_render($commands);
     exit;
   }
