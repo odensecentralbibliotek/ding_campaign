@@ -301,7 +301,7 @@ function ding_campaign_admin_select($js = NULL, $step = NULL) {
 function ding_campaign_admin_select_form($form, &$form_state) {
   $destination = drupal_get_destination();
   $split_destination = parse_url($destination['destination']);
-  $path = substr($destination['destination'], 0, $split_destination['path']);
+  $path = $split_destination['path'];
   
   $path_alias = drupal_get_path_alias($path);
   $front_page = variable_get('site_frontpage', 'node');
