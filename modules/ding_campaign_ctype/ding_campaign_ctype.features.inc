@@ -20,9 +20,9 @@ function ding_campaign_ctype_ctools_plugin_api() {
 function ding_campaign_ctype_image_default_styles() {
   $styles = array();
 
-  // Exported image style: ding_campaign_w_180.
-  $styles['ding_campaign_w_180'] = array(
-    'name' => 'ding_campaign_w_180',
+  // Exported image style: ding_campaign_w_165.
+  $styles['ding_campaign_w_165'] = array(
+    'name' => 'ding_campaign_w_165',
     'effects' => array(
       3 => array(
         'label' => 'Scale',
@@ -34,7 +34,7 @@ function ding_campaign_ctype_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => 180,
+          'width' => 165,
           'height' => '',
           'upscale' => 1,
         ),

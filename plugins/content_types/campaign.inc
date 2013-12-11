@@ -89,7 +89,7 @@ function ding_campaign_campaign_content_type_edit_form($form, &$form_state) {
     '#description' => t('Applicable for image campaigns. Image will be resized to selected width, height will be selected automatically.'),
     '#options' => array(
       'medium' => t('Default (medium)'),
-      'ding_campaign_w_180' => t('180px'),
+      'ding_campaign_w_165' => t('165px'),
       'ding_campaign_w_280' => t('280px'),
       'ding_campaign_w_380' => t('380px'),
       'ding_campaign_w_480' => t('480px'),
