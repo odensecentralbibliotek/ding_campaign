@@ -385,10 +385,34 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
   $defaults = $form['ding_campaigns_wrap']['ding_campaigns']['#default_value'];
   // Throw away all disabled campaigns.
   $campaigns = array_filter($form_state['input']['ding_campaigns']);
+  $TingMaterials = array();
   if (isset($form['#node'])) {
-    $node = $form['#node'];
-    $node->ding_campaigns = $campaigns;
-    node_save($node);
+    $raw_node = $form['#node'];
+    $test = entity_load("node",array($raw_node->nid));
+    //unset($raw_node->field_ding_news_materials);
+    $raw_node->ding_campaigns = $campaigns;
+    if(sizeof($raw_node->field_ding_news_materials) != 0)
+    {
+        foreach($raw_node->field_ding_news_materials["und"] as $Materials)
+        {
+            $tmp = $Materials[value]->endpoints["und"];
+            foreach($tmp as $endpoint)
+            {
+                if($endpoint["entity_type"] == "ting_object")
+                {
+                    //Load Materials obj.
+                    $tmp = $endpoint["entity_id"];
+                    $TingMaterial = entity_load("ting_object",array($tmp) );
+                    $holder = array();
+                    $holder["tid"] = $TingMaterial[$tmp]->tid;
+                    $holder["ting_object_id"] = $TingMaterial[$tmp]->ding_entity_id;
+                    array_push($TingMaterials,$holder);
+                }
+            }
+        }
+    }
+    $raw_node->field_ding_news_materials["und"] = $TingMaterials;
+    node_save($raw_node);
   } else {
     $added = array_diff_key($campaigns, $defaults);
     $removed = array_diff_key($defaults, $campaigns);
