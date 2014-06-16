@@ -388,29 +388,36 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
   $TingMaterials = array();
   if (isset($form['#node'])) {
     $raw_node = $form['#node'];
-    $test = entity_load("node",array($raw_node->nid));
-    //unset($raw_node->field_ding_news_materials);
     $raw_node->ding_campaigns = $campaigns;
+    //If there are materials , loop and recreate original code.
     if(sizeof($raw_node->field_ding_news_materials) != 0)
     {
         foreach($raw_node->field_ding_news_materials["und"] as $Materials)
         {
-            $tmp = $Materials[value]->endpoints["und"];
-            foreach($tmp as $endpoint)
+            //sanity check. if 0 or not set. break.
+            if(!isset($Materials[value]->endpoints["und"]) && sizeof($Materials[value]->endpoints["und"]) != 0)
+            {
+                break;
+            }
+            foreach($Materials[value]->endpoints["und"] as $endpoint)
             {
                 if($endpoint["entity_type"] == "ting_object")
                 {
                     //Load Materials obj.
-                    $tmp = $endpoint["entity_id"];
-                    $TingMaterial = entity_load("ting_object",array($tmp) );
-                    $holder = array();
-                    $holder["tid"] = $TingMaterial[$tmp]->tid;
-                    $holder["ting_object_id"] = $TingMaterial[$tmp]->ding_entity_id;
+                    $Entityid = $endpoint["entity_id"];
+                    $TingMaterial = entity_load("ting_object",array($Entityid) );
+                    
+                    
+                    //Create replacement structure for ting_reference.
+                    $container = array();
+                    $holder["tid"] = $TingMaterial[$Entityid]->tid;
+                    $holder["ting_object_id"] = $TingMaterial[$Entityid]->ding_entity_id;
                     array_push($TingMaterials,$holder);
                 }
             }
         }
     }
+    //replace ting_reference with workaround.
     $raw_node->field_ding_news_materials["und"] = $TingMaterials;
     node_save($raw_node);
   } else {
