@@ -377,7 +377,55 @@ function ding_campaign_admin_select_form($form, &$form_state) {
 
   return $form;
 }
+function ding_materials_save_workaround($node)
+{
+    $TingMaterials = array();
+    if(isset($node))
+    {
+      $PropertyName = null;
+      foreach($node as $Property => $Value)
+      {
+          if (strpos($Property, '_materials') !== FALSE)
+          {
+              $PropertyName = $Property;
+              break;
+          }
+      }
+      if($PropertyName != null)
+      {
+          if(sizeof($node->$PropertyName) != 0)
+          {
+              $Data = $node->$PropertyName; // needed as we cant implicit reference members with dynamic property.
+              foreach($Data["und"] as $Materials)
+              {
+                    //sanity check. if 0 or not set. break.
+                if(!isset($Materials[value]->endpoints["und"]) && sizeof($Materials[value]->endpoints["und"]) != 0)
+                {
+                    break;
+                }
+                foreach($Materials[value]->endpoints["und"] as $endpoint)
+                {
+                    if($endpoint["entity_type"] == "ting_object")
+                    {
+                        //Load Materials obj.
+                        $Entityid = $endpoint["entity_id"];
+                        $TingMaterial = entity_load("ting_object",array($Entityid) );
 
+
+                        //Create replacement structure for ting_reference.
+                        $container = array();
+                        $container["tid"] = $TingMaterial[$Entityid]->tid;
+                        $container["ting_object_id"] = $TingMaterial[$Entityid]->ding_entity_id;
+                        array_push($TingMaterials,$container);
+                    }
+                }
+              }
+          }
+      }
+      
+    }
+    return $TingMaterials;
+}
 function ding_campaign_admin_select_form_submit($form, &$form_state) {
   $destination = drupal_get_destination();
   $path = $form_state['values']['path'];
@@ -389,36 +437,8 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
   if (isset($form['#node'])) {
     $raw_node = $form['#node'];
     $raw_node->ding_campaigns = $campaigns;
-    //If there are materials , loop and recreate original code.
-    if(sizeof($raw_node->field_ding_news_materials) != 0)
-    {
-        foreach($raw_node->field_ding_news_materials["und"] as $Materials)
-        {
-            //sanity check. if 0 or not set. break.
-            if(!isset($Materials[value]->endpoints["und"]) && sizeof($Materials[value]->endpoints["und"]) != 0)
-            {
-                break;
-            }
-            foreach($Materials[value]->endpoints["und"] as $endpoint)
-            {
-                if($endpoint["entity_type"] == "ting_object")
-                {
-                    //Load Materials obj.
-                    $Entityid = $endpoint["entity_id"];
-                    $TingMaterial = entity_load("ting_object",array($Entityid) );
-                    
-                    
-                    //Create replacement structure for ting_reference.
-                    $container = array();
-                    $holder["tid"] = $TingMaterial[$Entityid]->tid;
-                    $holder["ting_object_id"] = $TingMaterial[$Entityid]->ding_entity_id;
-                    array_push($TingMaterials,$holder);
-                }
-            }
-        }
-    }
     //replace ting_reference with workaround.
-    $raw_node->field_ding_news_materials["und"] = $TingMaterials;
+    $raw_node->field_ding_news_materials["und"] = ding_materials_save_workaround($raw_node);
     node_save($raw_node);
   } else {
     $added = array_diff_key($campaigns, $defaults);
