@@ -399,11 +399,11 @@ function ding_materials_save_workaround($node)
               foreach($Data["und"] as $Materials)
               {
                     //sanity check. if 0 or not set. break.
-                if(!isset($Materials[value]->endpoints["und"]) && sizeof($Materials[value]->endpoints["und"]) != 0)
+                if(!isset($Materials['value']->endpoints["und"]) && sizeof($Materials['value']->endpoints["und"]) != 0)
                 {
                     break;
                 }
-                foreach($Materials[value]->endpoints["und"] as $endpoint)
+                foreach($Materials['value']->endpoints["und"] as $endpoint)
                 {
                     if($endpoint["entity_type"] == "ting_object")
                     {
