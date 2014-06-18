@@ -410,8 +410,11 @@ function ding_materials_save_workaround($node)
                         //Load Materials obj.
                         $Entityid = $endpoint["entity_id"];
                         $TingMaterial = entity_load("ting_object",array($Entityid) );
-
-                        //Create replacement structure for ting_reference.
+                        /*
+                        * Create replacement structure for ting_reference.
+                         * Issues: $container["object"] is only neeeded in certain versions.
+                         * Need to verify for new platforms if needed or not.
+                        */
                         $container = array();
                         $container["tid"] = $TingMaterial[$Entityid]->tid;
                         $container["object"] = $TingMaterial[$Entityid];
