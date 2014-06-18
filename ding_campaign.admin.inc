@@ -433,7 +433,7 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
   $defaults = $form['ding_campaigns_wrap']['ding_campaigns']['#default_value'];
   // Throw away all disabled campaigns.
   $campaigns = array_filter($form_state['input']['ding_campaigns']);
-  $TingMaterials = array();
+
   if (isset($form['#node'])) {
     $raw_node = $form['#node'];
     $raw_node->ding_campaigns = $campaigns;
