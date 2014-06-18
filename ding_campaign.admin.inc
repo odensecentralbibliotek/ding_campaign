@@ -440,8 +440,19 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
   if (isset($form['#node'])) {
     $raw_node = $form['#node'];
     $raw_node->ding_campaigns = $campaigns;
-    //replace ting_reference with workaround.
-    $raw_node->field_ding_news_materials["und"] = ding_materials_save_workaround($raw_node);
+    //replace ting_materials_reference with workaround.
+    $PropertyName = null;
+    foreach($raw_node as $Property => $Value)
+    {
+        if (strpos($Property, '_materials') !== FALSE)
+        {
+            $PropertyName = $Property;
+            break;
+        }
+    }
+    $ref = $raw_node->$PropertyName;
+    $ref["und"] = ding_materials_save_workaround($raw_node);
+    $raw_node->$PropertyName = $ref;
     node_save($raw_node);
   } else {
     $added = array_diff_key($campaigns, $defaults);
