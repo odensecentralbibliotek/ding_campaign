@@ -450,9 +450,13 @@ function ding_campaign_admin_select_form_submit($form, &$form_state) {
             break;
         }
     }
-    $ref = $raw_node->$PropertyName;
-    $ref["und"] = ding_materials_save_workaround($raw_node);
-    $raw_node->$PropertyName = $ref;
+    if($PropertyName != null)
+    {
+        $ref = $raw_node->$PropertyName;
+        $ref["und"] = ding_materials_save_workaround($raw_node);
+        $raw_node->$PropertyName = $ref;
+    }
+    
     node_save($raw_node);
   } else {
     $added = array_diff_key($campaigns, $defaults);
