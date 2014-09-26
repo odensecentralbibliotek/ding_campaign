@@ -319,7 +319,7 @@ function ding_campaign_admin_select_form($form, &$form_state) {
   $defaults = array();
   $path_arr = explode('/', $path);
   if ($path_arr[0] == 'node') {
-    $node = node_load($path_arr[1]);
+    $node = node_load($path_arr[1],null,true); // Reset cache or this will break when using alongside entitycache.
     $enabled_types = variable_get('ding_campaign_node_types', array());
     if (isset($enabled_types[$node->type . '_node_form']) && $enabled_types[$node->type . '_node_form'] === $node->type . '_node_form') {
       $form['#node'] = $node;
