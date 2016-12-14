@@ -288,7 +288,7 @@ function ding_campaign_get_campaigns($context, $limit, $offset) {
     }
     // Single keyword.
     else {
-      $condition = ' = \'' . $context['search_term'] . '\'';
+      $condition = ' = \'' . CHECK_PLAIN($context['search_term']) . '\'';
     }
 
     $result = db_query('SELECT r.cid
