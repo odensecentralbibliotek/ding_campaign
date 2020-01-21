@@ -170,7 +170,8 @@ function ding_campaign_display($context, $count, $offset, $style = 'medium') {
 
         case 'full':
           $camp_text_full = field_get_items('node', $node, 'field_camp_text_full');
-          $content = '<div class="' . $base_class . ' ' . $base_class . '-id-' . $v . ' ding-campaign-item-full">' . $camp_text_full[0]['safe_value'] . '</div>';
+          $val = (isset($camp_text_full[0]['safe_value'])  ? $camp_text_full[0]['safe_value'] : check_markup($camp_text_full[0]['value'],'ding_wysiwyg'));
+          $content = '<div class="' . $base_class . ' ' . $base_class . '-id-' . $v . ' ding-campaign-item-full">' . $val. '</div>';
           break;
 
       }
